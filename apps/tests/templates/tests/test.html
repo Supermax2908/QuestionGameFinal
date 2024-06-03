@@ -18,6 +18,9 @@
         {% csrf_token %}
         <button class="btn mt-6">ВИДАЛИТИ</button>
       </form>
+      <a href="{% url 'tests:registration_test' test.id %}" class="btn font-bold mt-6">Вхід в систему</a>
+      {% elif user.is_authenticated %}
+      <a href="{% url "tests:registration_test" test.id %}" class="btn btn-accent font-bold mt-5">Реєстрація на тест</a>
       {% endif %}
     </div>
   </div>

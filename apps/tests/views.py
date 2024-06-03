@@ -42,3 +42,13 @@ def delete_test(request, test_id):
     else:
         messages.error(request, 'Помилка видалення тесту.')
     return redirect('tests:test')
+
+@login_required
+def registration_test(request, test_id):
+    test = get_object_or_404(Test, pk=test_id)
+    if request.method == 'POST':
+        if test.author == request.user:
+            return redirect('tests:create_question', test_id=test.id)
+        else:
+            messages.success('Учасник 1 зареєструвався на тест')
+    return render(request, 'tests/registration_test.html', {'test': test})

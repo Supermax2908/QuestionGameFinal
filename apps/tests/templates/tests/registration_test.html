@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Реєстрація на тест{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-center bg-base-500 pt-5">
+  <div class="w-1/2 bg-secondary p-5 rounded-box">
+    <h1 class="flex justify-center items-center text-white font-bold">Реєстрація на тест {{ test.topic }} від {{ test.author }}</h1>
+    <form method="post">
+      {% csrf_token %}
+      {% if test.author == user %}
+      <button class="btn btn-accent font-bold mt-5">Ввійти в систему</button>
+      {% else %}
+      <button class="btn btn-accent font-bold mt-5">Зареєструватися на тест</button>
+      {% endif %}
+    </form>
+  </div>
+</div>
+{% endblock %}
