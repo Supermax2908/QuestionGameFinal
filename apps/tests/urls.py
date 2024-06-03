@@ -9,4 +9,8 @@ urlpatterns = [
     path('delete/test/<int:test_id>/', views.delete_test, name='delete_test'),
     
     path('registration/<int:test_id>/', views.registration_test, name='registration_test'),
+    
+    path('question/<slug:slug>/', views.take_question, name='question'),
+    path('create/question/<int:test_id>/', views.create_question, name='create_question'),
+    path('delete/question/<slug:slug>/', views.delete_question, name='delete_question')
 ]

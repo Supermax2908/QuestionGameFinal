@@ -16,4 +16,23 @@ class Test(models.Model):
     
     class Meta:
         ordering=['-created_at']
+        
+
+class Question(models.Model):
+    test = models.ForeignKey(Test, on_delete=models.CASCADE)
+    content = models.CharField(max_length=250)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='authors_questions', default=None)
+    
+    image = models.ImageField(upload_to='question_images/', null=True, blank=True)
+    slug = models.SlugField(max_length=255, unique=True, verbose_name='URL')
+        
+    def __str__(self):
+        return f'{self.content} - {self.test.topic} - {self.test.author}'
+    
+    def get_image(self):
+        if self.image:
+            return self.image.url
+        else:
+            return 'https://via.placeholder.com/800x400.jpg'
+
 

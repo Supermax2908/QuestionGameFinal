@@ -16,7 +16,7 @@
       {% if test.author == user %}
       <form action="{% url 'tests:delete_test' test.id %}" method="post" enctype='multipart/form-data'>
         {% csrf_token %}
-        <button class="btn mt-6">ВИДАЛИТИ</button>
+        <button class="btn mt-6">Видалити тест</button>
       </form>
       <a href="{% url 'tests:registration_test' test.id %}" class="btn font-bold mt-6">Вхід в систему</a>
       {% elif user.is_authenticated %}
