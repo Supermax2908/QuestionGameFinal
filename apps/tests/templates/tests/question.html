@@ -3,35 +3,26 @@
 
 {% block content %}
 {% if test.author == user %}
-<button class="flex justify-center btn btn-primary mr-4 mt-6" onclick="create_question.showModal()">Створити питання</button>
-<div class="bg-base-300 mt-6 w-full h-80 flex flex-col justify-center items-center rounded-box">
-    <p class="flex justify-center font-bold">{{ question.content }}</p>
-    {% if question.image %}
-    <img src="{{ question.image.url }}" alt="Question Image" class="mt-4 max-w-full h-auto">
-    {% endif %}
-    {% if question %}
-    <form action="{% url 'tests:delete_test' test.id %}" method="post" enctype='multipart/form-data'>
-        {% csrf_token %}
-        <button class="btn mt-6">Видалити питання</button>
-    </form>
-    {% endif %}
-</div>
+<h1 class="flex justify-center text-2xl font-bold">Питання тесту "{{ test.topic }}"</h1>
+<a onclick="create_question.showModal()" class="flex justify-center btn btn-accent mt-5 font-bold w-40">Створити питання</a>
+{% if question.id %}
+<a href="{% url "tests:create_answer" question_id=question.id %}">Перейти до створення відповідей</a>
+{% endif %}
 {% elif test.author != user %}
-<div class="bg-base-300 mt-6 w-full h-80 flex flex-col justify-center items-center rounded-box">
-  <p class="flex justify-center font-bold">{{ question.content }}</p>
-  {% if question.image %}
-  <img src="{{ question.image.url }}" alt="Question Image" class="mt-4 max-w-full h-auto">
-  {% endif %}
-</div>
+
+{% if question.id %}
+<a href="{% url "tests:make_answers" question_id=question.id %}">Перейти до права відповісти</a>
+{% endif %}
 {% endif %}
 
 <dialog id="create_question" class="modal">
-  <div class="modal-box">
+  <div class="modal-box w-11/12 max-w-5xl">
     <form method="dialog">
       <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
     </form>
-    {% if test.author and test.id %}
-    <form action="{% url 'tests:create_question' test_id=test.id %}" method="post">
+    <h3 class="font-bold text-lg">Створити питання</h3>
+    {% if test.id %}
+    <form action="{% url 'tests:create_question' test_id=test.id %}" method="post" enctype='multipart/form-data'>
       {% csrf_token %}
       <div class="grid grid-cols-1 gap-6">
         {% for field in question_form %}
@@ -40,14 +31,14 @@
             <span class="label-text">{{ field.label }}</span>
           </label>
           {% if field.name == 'content' %}
-            <input type="text" placeholder="{{ Питання }}" class="input input-bordered w-full max-w-xs" name="{{ field.name }}">
+          <input type="text" placeholder="Питання" class="input input-bordered w-full max-w-xs" name="{{ field.name }}">
           {% elif field.name == 'image' %}
-            <input type="file" class="file-input w-full max-w-xs" name="{{ field.name }}">
+          <input type="file" name="{{ field.name }}" class="file-input file-input-bordered file-input-accent w-full max-w-xs" />
           {% endif %}
         </div>
         {% endfor %}
+        <button class='btn w-80'>Створити</button>
       </div>
-      <button type="submit" class="btn w-80 mt-6">Створити</button>
     </form>
     {% endif %}
   </div>
