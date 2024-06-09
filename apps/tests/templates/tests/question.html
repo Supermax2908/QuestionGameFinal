@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Питання{% endblock %}
+
+{% block content %}
+{% if test.author == user %}
+<h1 class="flex justify-center text-2xl font-bold">Питання тесту "{{ test.topic }}"</h1>
+<a onclick="create_question.showModal()" class="flex justify-center btn btn-accent mt-5 font-bold w-40">Створити питання</a>
+{% if question.id %}
+<a href="{% url "tests:create_answer" question_id=question.id %}">Перейти до створення відповідей</a>
+{% endif %}
+{% elif test.author != user %}
+
+{% if question.id %}
+<a href="{% url "tests:make_answers" question_id=question.id %}">Перейти до права відповісти</a>
+{% endif %}
+{% endif %}
+
+<dialog id="create_question" class="modal">
+  <div class="modal-box w-11/12 max-w-5xl">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    <h3 class="font-bold text-lg">Створити питання</h3>
+    {% if test.id %}
+    <form action="{% url 'tests:create_question' test_id=test.id %}" method="post" enctype='multipart/form-data'>
+      {% csrf_token %}
+      <div class="grid grid-cols-1 gap-6">
+        {% for field in question_form %}
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">{{ field.label }}</span>
+          </label>
+          {% if field.name == 'content' %}
+          <input type="text" placeholder="Питання" class="input input-bordered w-full max-w-xs" name="{{ field.name }}">
+          {% elif field.name == 'image' %}
+          <input type="file" name="{{ field.name }}" class="file-input file-input-bordered file-input-accent w-full max-w-xs" />
+          {% endif %}
+        </div>
+        {% endfor %}
+        <button class='btn w-80'>Створити</button>
+      </div>
+    </form>
+    {% endif %}
+  </div>
+</dialog>
+
+{% endblock %}

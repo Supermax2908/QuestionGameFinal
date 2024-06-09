@@ -8,7 +8,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body>
-
+    {% if user.superuser %}
+    <a href="/admin/" class="btn bm-accent">Адмінка</a>
+    {% endif %}
     {% include "_include_blocks/_nav_block.html" %}
     {% if messages %}
     <div class="toast toast-end">

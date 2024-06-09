@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Тести{% endblock %}
+
+{% block content %}
+<div class="bg-base-500 mt-5">
+  <h1 class="text-3xl flex justify-center font-serif mt-4">Тести</h1>
+  <div class="flex justify-center">
+    <a onclick="my_modal_4.showModal()" class="flex justify-center btn btn-accent mt-5 font-bold w-40">Створити тест</a>
+  </div>
+  <div class="grid grid-cols-3 gap-8 mt-8">
+    {% for test in all_tests %}
+    <div class="mb-6 bg-secondary rounded-box p-5 mt-6 ml-5 mr-5">
+      <h1 class="flex justify-center font-bold  mt-5">{{test.topic}} від {{test.author}}</h1>
+      <p class="text-white">{{test.description}}</p>
+      <p class="text-white mt-4">{{test.created_at}}</p>
+      {% if test.author == user %}
+      <form action="{% url 'tests:delete_test' test.id %}" method="post" enctype='multipart/form-data'>
+        {% csrf_token %}
+        <button class="btn mt-6">Видалити тест</button>
+      </form>
+      <a href="{% url 'tests:registration_test' test.id %}" class="btn font-bold mt-6">Вхід в систему</a>
+      {% elif user.is_authenticated %}
+      <a href="{% url "tests:registration_test" test.id %}" class="btn btn-accent font-bold mt-5">Реєстрація на тест</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<dialog id="my_modal_4" class="modal">
+    <div class="modal-box w-11/12 max-w-5xl">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+      </form>
+      <h3 class="font-bold text-lg">Створити тест</h3>
+      <form action="{% url 'tests:create_test' %}" method="post" enctype='multipart/form-data'>
+        {% csrf_token %}
+        <div class="grid grid-cols-1 gap-6">
+          {% for field in created_form %}
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">{{field.label}}</span>
+            </label>
+            {% if field.name == 'topic' %}
+            <input type="text" placeholder="Тема" class="input input-bordered w-full max-w-xs" name="{{field.name}}">
+            {% elif field.name == 'description' %}
+            <textarea class="textarea h-24 textarea-bordered" name='{{field.name}}' placeholder="{{field.label}}" rows="10"></textarea>
+            {% endif %}
+          </div>
+          {% endfor %}
+          <button class='btn w-80'>Створити</button>
+        </div>
+      </form>
+    </div>
+</dialog>
+{% endblock %}

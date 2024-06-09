@@ -16,9 +16,26 @@
       </div>
     </div>
     <div class="navbar-center hidden lg:flex">
-        
+      <ul class="menu menu-horizontal px-1">
+        <li><a href="{% url "tests:test" %}" class="font-bold">Тести</a></li>
+      </ul>
     </div>
     <div class="navbar-end hidden lg:flex">
-  
+   <div class="dropdown dropdown-end">
+            {% if user.is_authenticated %}
+              <button class="btn btn-primary font-bold">{{user.username}}</button>
+              <ul tabindex="0" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-45">
+                <li><a href="{% url 'registration:logout' %}" class="font-bold">Вийти</a></li>
+              </ul>
+            {% else %}
+              <div class="dropdown dropdown-end">
+                <button class="btn text-secondary font-serif">Увійти</button>
+                <ul tabindex="0" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-45">
+                  <li><a href="{% url 'registration:login' %}" class="text-secondary font-bold mb-2">Увійти</a></li>
+                  <li><a href="{% url 'registration:signup' %}" class="text-secondary font-bold">Зареєструватися</a></li>
+                </ul>
+              </div>
+            {% endif %}
+        </div>
     </div>
 </div>

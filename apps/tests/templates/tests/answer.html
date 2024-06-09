@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Варіанти відповідей {% endblock %}
+
+{% block content %}
+{% if question.test.author == user %}
+<h1 class="flex justify-center font-bold text-2xl">{{question.content}}</h1>
+<button class="flex justify-center btn btn-primary mr-4 mt-6" onclick="create_answer.showModal()">Створити відповіді</button>
+{% elif question.test.author != user %}
+<h1 class="flex justify-center font-bold text-2xl">{{question.content}}</h1>
+{% if question.image %}
+<p class="text-info">Вам треба позвати суперюзера, щоб він допоміг вам із загрузкою зображення на сайт</p>
+<img src="{{ question.image.url }}" alt="Question Image" class="w-70 mt-4">
+{% endif %}
+<div class="flex justify-between">
+  {% for option in options %}
+    {% if question.id %}
+      <form action="{% url 'tests:submit_answer' question_id=question.id %}" method="post" enctype='multipart/form-data'>
+        {% csrf_token %}
+        <input type="hidden" name="option_id" value="{{ option.id }}">
+        <button type="submit" class="btn text-white mt-14">
+          {% if option.option_text %}
+            {{ option.option_text }}
+          {% elif option.option_image %}
+            <img src="{{ option.option_image.url }}" alt="Answer Image">
+          {% endif %}
+        </button>
+      </form>
+    {% endif %}
+  {% endfor %}
+</div>
+{% endif %}
+
+<dialog id="create_answer" class="modal">
+  <div class="modal-box w-11/12 max-w-5xl">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    <h3 class="font-bold text-lg">Створити варіант відповіді</h3>
+    {% if question.id %}
+    <form action="{% url 'tests:create_answer' question_id=question.id %}" method="post" enctype='multipart/form-data'>
+      {% csrf_token %}
+      <div class="grid grid-cols-1 gap-6">
+        {% for field in create_answer_form %}
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">{{ field.label }}</span>
+          </label>
+          {% if field.name == 'option_text' %}
+          <input type="text" placeholder="Введіть відповідь" class="input input-accent w-full max-w-xs" name="{{ field.name }}">
+          {% elif field.name == 'option_image' %}
+          <input type="file" name="{{ field.name }}" class="file-input file-input-accent file-input-accent w-full max-w-xs" />
+          {% elif field.name == 'is_correct' %}
+          <input type="checkbox" class="checkbox checkbox-accent" name = {{field.name}} value="{{field.value}}">
+          {% endif %}
+        </div>
+        {% endfor %}
+        <button class='btn w-80'>Створити</button>
+      </div>
+    </form>
+    {% endif %}
+  </div>
+</dialog>
+
+{% endblock %}
